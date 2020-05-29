@@ -198,74 +198,69 @@ for i in range(0,len(datarray)):
 # In[ ]:
 
 
+if Block == 1: 
+    # libraries to be imported 
+    import smtplib 
+    from email.mime.multipart import MIMEMultipart 
+    from email.mime.text import MIMEText 
+    from email.mime.base import MIMEBase 
+    from email import encoders 
 
-# libraries to be imported 
-import smtplib 
-from email.mime.multipart import MIMEMultipart 
-from email.mime.text import MIMEText 
-from email.mime.base import MIMEBase 
-from email import encoders 
+    fromaddr = "hsdd@gmail.com"
+    toaddr = "sdif@gmail.com"
 
-fromaddr = "hsdd@gmail.com"
-toaddr = "sdif@gmail.com"
+    # instance of MIMEMultipart 
+    msg = MIMEMultipart() 
 
-# instance of MIMEMultipart 
-msg = MIMEMultipart() 
+    # storing the senders email address 
+    msg['From'] = fromaddr 
 
-# storing the senders email address 
-msg['From'] = fromaddr 
+    # storing the receivers email address 
+    msg['To'] = toaddr 
 
-# storing the receivers email address 
-msg['To'] = toaddr 
+    # storing the subject 
+    msg['Subject'] = "DOS Attack Blocked"
 
-# storing the subject 
-msg['Subject'] = "DOS Attack Blocked"
+    # string to store the body of the mail 
+    body = "IP has been Blocked"+str(IPLIST)
 
-# string to store the body of the mail 
-body = "IP has been Blocked"+str(IPLIST)
+    # attach the body with the msg instance 
+    msg.attach(MIMEText(body, 'plain')) 
 
-# attach the body with the msg instance 
-msg.attach(MIMEText(body, 'plain')) 
+    # open the file to be sent 
+    filename = "report.html"
+    attachment = open("/var/www/html/report.html", "rb") 
 
-# open the file to be sent 
-filename = "report.html"
-attachment = open("/var/www/html/report.html", "rb") 
+    # instance of MIMEBase and named as p 
+    p = MIMEBase('application', 'octet-stream') 
 
-# instance of MIMEBase and named as p 
-p = MIMEBase('application', 'octet-stream') 
+    # To change the payload into encoded form 
+    p.set_payload((attachment).read()) 
 
-# To change the payload into encoded form 
-p.set_payload((attachment).read()) 
+    # encode into base64 
+    encoders.encode_base64(p) 
 
-# encode into base64 
-encoders.encode_base64(p) 
+    p.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
 
-p.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
+    # attach the instance 'p' to instance 'msg' 
+    msg.attach(p) 
 
-# attach the instance 'p' to instance 'msg' 
-msg.attach(p) 
+    # creates SMTP session 
+    s = smtplib.SMTP('smtp.gmail.com', 587) 
 
-# creates SMTP session 
-s = smtplib.SMTP('smtp.gmail.com', 587) 
+    # start TLS for security 
+    s.starttls() 
 
-# start TLS for security 
-s.starttls() 
+    # Authentication 
+    s.login(fromaddr, "eqaksldk;f") 
 
-# Authentication 
-s.login(fromaddr, "eqaksldk;f") 
+    # Converts the Multipart msg into a string 
+    text = msg.as_string() 
 
-# Converts the Multipart msg into a string 
-text = msg.as_string() 
+    # sending the mail 
+    s.sendmail(fromaddr, toaddr, text) 
 
-# sending the mail 
-s.sendmail(fromaddr, toaddr, text) 
-
-# terminating the session 
-s.quit() 
-
-
-# In[ ]:
-
-
+    # terminating the session 
+    s.quit() 
 
 
